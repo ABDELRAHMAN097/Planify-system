@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -9,6 +9,13 @@ const Signin = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      navigate('/'); 
+    }
+  }, [navigate]);
 
   const validationSchema = Yup.object({
     email: Yup.string().email('Invalid email format').required('Email is required'),
@@ -48,13 +55,13 @@ const Signin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">تسجيل الدخول</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
 
         {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block mb-1 text-gray-700 font-medium">البريد الإلكتروني</label>
+            <label htmlFor="email" className="block mb-1 text-gray-700 font-medium">email</label>
             <input
               id="email"
               type="email"
@@ -65,7 +72,7 @@ const Signin = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block mb-1 text-gray-700 font-medium">كلمة المرور</label>
+            <label htmlFor="password" className="block mb-1 text-gray-700 font-medium">password</label>
             <input
               id="password"
               type="password"
@@ -86,9 +93,9 @@ const Signin = () => {
         </form>
 
         <p className="text-center text-gray-600 text-sm mt-6">
-          ليس لديك حساب؟{' '}
+        Don&apos;t have an account?
           <a href="/signup" className="text-indigo-600 hover:text-indigo-800 font-medium">
-            تسجيل حساب جديد
+            Create Acount
           </a>
         </p>
       </div>

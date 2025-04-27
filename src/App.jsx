@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Dashboard from "./features/dashboard/Dashboard.jsx";
@@ -11,15 +12,32 @@ import ProjectTeamManager from "./features/team/ProjectTeamManager.jsx";
 import EditProject from "./features/projects/EditProject.jsx";
 import Signin from "./pages/Signin.jsx";
 import Signup from "./pages/Signup.jsx";
+import ProtectedRoutes from "./lib/utils/ProtectedRoutes.jsx";
 
 function App() {
   return (
     <BrowserRouter>
+    <Toaster position="top-center" reverseOrder={false} />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects/new" element={<CreateProject />} />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoutes>
+              <Dashboard />
+            </ProtectedRoutes>
+          }
+        />
+         <Route 
+          path="/projects/new" 
+          element={
+            <ProtectedRoutes>
+              <CreateProject />
+            </ProtectedRoutes>
+          }
+        />
+      
         <Route path="/TeamList" element={<TeamList />} />
         <Route path="/tasks-list/:projectId" element={<TasksList />} />
         <Route path="/team/:id" element={<MemberDetails />} />

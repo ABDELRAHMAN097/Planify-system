@@ -38,6 +38,8 @@ const Signup = () => {
       phone: "",
       role: "",
       skills: [],
+      isAdmin: false,
+      isLead: false,
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
@@ -59,8 +61,11 @@ const Signup = () => {
           email: values.email,
           phone: values.phone,
           skills: values.skills,
+          isAdmin: false,
+          isLead: false,
         };
 
+        // Add new team member to the database
         await axios.post("http://localhost:3000/team", newTeamMember);
 
         setSuccessMessage(
@@ -90,9 +95,11 @@ const Signup = () => {
   const handleAddNewSkill = () => {
     const trimmedSkill = newSkill.trim();
     if (trimmedSkill && !skillsList.includes(trimmedSkill)) {
+      // Add new skill to the local skills list
       setSkillsList([...skillsList, trimmedSkill]);
+      // Add the new skill to the form
       formik.setFieldValue("skills", [...formik.values.skills, trimmedSkill]);
-      setNewSkill("");
+      setNewSkill(""); // Reset input field after adding
     }
   };
 
@@ -123,7 +130,7 @@ const Signup = () => {
             variants={itemVariants}
             className="text-2xl font-bold text-center"
           >
-            Create New Acount
+            Create New Account
           </motion.h2>
         </div>
 
@@ -269,30 +276,33 @@ const Signup = () => {
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   placeholder="أضف مهارة جديدة"
-                  className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+                  className="px-4 py-2 w-full border rounded-lg focus:outline-none focus:border-indigo-500"
                 />
                 <button
                   type="button"
                   onClick={handleAddNewSkill}
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
                 >
                   <FiPlus />
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={formik.isSubmitting}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-lg transition duration-300"
-            >
-              {formik.isSubmitting ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
-            </button>
-            <Link to="/Signin">
-              <button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-lg transition duration-300 mt-2">
+            {/* Submit Button */}
+            <div className="flex flex-col justify-center">
+              <motion.button
+                type="submit"
+                disabled={formik.isSubmitting}
+                className="w-full py-2 px-4 bg-indigo-600 text-white rounded-lg"
+              >
+                {formik.isSubmitting ? "جارٍ إنشاء الحساب..." : "إنشاء الحساب"}
+              </motion.button>
+              <Link to="/Signin">
+              <motion.button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-lg transition duration-300 mt-2">
                 Signin
-              </button>
+                </motion.button>
             </Link>
+            </div>
           </form>
         </div>
       </motion.div>

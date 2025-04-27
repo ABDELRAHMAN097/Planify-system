@@ -76,8 +76,8 @@
         "Node.js",
         "Django"
       ],
-      "isAdmin": false,
-      "isLead": false
+      "isAdmin": true,
+      "isLead": true
     },
     {
       "id": 1745669892384,
@@ -87,21 +87,6 @@
       "phone": "01023685258",
       "skills": [
         "figma"
-      ],
-      "isAdmin": false,
-      "isLead": false
-    },
-    {
-      "id": 1745670466616,
-      "name": "Fatma",
-      "role": "frontend",
-      "email": "Fatma@gmail.com",
-      "phone": "01022655233",
-      "skills": [
-        "Next.js",
-        "CSS",
-        "React",
-        "Node.js"
       ],
       "isAdmin": false,
       "isLead": false
@@ -119,38 +104,6 @@
       ],
       "isAdmin": true,
       "isLead": true
-    },
-    {
-      "id": 1745670710465,
-      "name": "fofo",
-      "role": "backend",
-      "email": "dsf@gmail.com",
-      "phone": "011748596",
-      "skills": [
-        "Django",
-        "Next.js",
-        "Node.js",
-        "HTML",
-        "JavaScript"
-      ],
-      "isAdmin": false,
-      "isLead": false
-    },
-    {
-      "id": 1745672282014,
-      "name": "lolo",
-      "role": "backend",
-      "email": "lolo@gmail.com",
-      "phone": "0155858585",
-      "skills": [
-        "Django",
-        "HTML",
-        "Node.js",
-        "JavaScript",
-        "Next.js"
-      ],
-      "isAdmin": false,
-      "isLead": false
     },
     {
       "id": 1745675623299,
@@ -210,6 +163,75 @@
         "Python",
         "Django"
       ]
+    },
+    {
+      "id": 1745757575847,
+      "name": "admin",
+      "role": "frontend",
+      "email": "admin@gmail.com",
+      "phone": "01023671214",
+      "skills": [
+        "HTML",
+        "React",
+        "CSS",
+        "Python",
+        "Next.js",
+        "JavaScript"
+      ],
+      "isAdmin": true,
+      "isLead": false
+    },
+    {
+      "id": 1745758038458,
+      "name": "aya mohamed",
+      "role": "backend",
+      "email": "aya@gmail.com",
+      "phone": "01023671214",
+      "skills": [
+        "Next.js",
+        "Python",
+        "Node.js",
+        "JavaScript",
+        "Django"
+      ]
+    },
+    {
+      "id": 1745758464133,
+      "name": "boody",
+      "role": "backend",
+      "email": "boo@gmail.com",
+      "phone": "01023658741",
+      "skills": [
+        "JavaScript",
+        "CSS",
+        "HTML"
+      ]
+    },
+    {
+      "id": 1745759193270,
+      "name": "Ahmed Darry",
+      "role": "ui/ux",
+      "email": "darry@gmail.com",
+      "phone": "01525252525",
+      "skills": [
+        "Django",
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ]
+    },
+    {
+      "id": 1745760674942,
+      "name": "ahmed",
+      "role": "ui/ux",
+      "email": "ahmed52@gmail.com",
+      "phone": "01525554444",
+      "skills": [
+        "HTML",
+        "Django"
+      ],
+      "isAdmin": true,
+      "isLead": false
     }
   ]
 }

@@ -30,7 +30,6 @@ const DraggableMember = ({ member }) => {
   );
 };
 
-
 const DropZone = ({ onDrop, children }) => {
   const [{ isOver }, drop] = useDrop({
     accept: ItemType.MEMBER,
@@ -51,7 +50,6 @@ const DropZone = ({ onDrop, children }) => {
     </div>
   );
 };
-
 
 const ProjectTeamManager = () => {
   const { id } = useParams();
@@ -144,7 +142,7 @@ const ProjectTeamManager = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="max-w-6xl mx-auto py-10 px-6">
+      <div className="max-w-6xl mx-auto py-8 px-6">
         <h1 className="text-3xl font-bold text-center mb-8">Project team management</h1>
 
         {project && (
@@ -156,7 +154,7 @@ const ProjectTeamManager = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="font-semibold text-lg mb-4 text-center">All employees</h3>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-[300px] overflow-y-auto">
                   {allMembers
                     .filter((m) => !project.team.includes(m.id))
                     .map((member) => (
@@ -169,7 +167,7 @@ const ProjectTeamManager = () => {
                 <h3 className="font-semibold text-lg mb-4 text-center">Team members</h3>
                 <DropZone onDrop={handleAddToTeam}>
                   {teamMembers.length === 0 ? (
-                    <p className="text-center text-gray-500">اسحب الموظفين هنا</p>
+                    <p className="text-center text-gray-500">Drag the staff here</p>
                   ) : (
                     <ul className="space-y-3">
                       {teamMembers.map((member) => (
@@ -183,9 +181,9 @@ const ProjectTeamManager = () => {
                           </div>
                           <button
                             onClick={() => handleRemove(member.id)}
-                            className="bg-slate-500 text-white px-3 py-1 rounded hover:bg-slate-600"
+                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                           >
-                            <AiFillDelete className="text-xl"/>
+                            <AiFillDelete className="text-xl" />
                           </button>
                         </li>
                       ))}

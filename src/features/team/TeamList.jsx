@@ -3,6 +3,7 @@ import TeamMemberCard from './MemberCard';
 import { useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { MdAdminPanelSettings } from "react-icons/md";
+import { motion } from 'framer-motion'; // استيراد مكتبة framer-motion
 
 const TeamList = () => {
   const [team, setTeam] = useState([]);
@@ -24,14 +25,11 @@ const TeamList = () => {
     fetchTeam();
   }, []);
 
- 
   const deleteMember = async (memberId) => {
     try {
-      
       await fetch(`http://localhost:3000/team/${memberId}`, {
         method: 'DELETE',
       });
-      
       setTeam(team.filter(member => member.id !== memberId));
     } catch (error) {
       console.error('Error deleting member:', error);
@@ -40,16 +38,14 @@ const TeamList = () => {
 
   const editRoll = async (memberId) => {
     try {
-      // إرسال طلب لتحديث حالة الـ isLead في الـ API
       await fetch(`http://localhost:3000/team/${memberId}`, {
-        method: 'PATCH', // استخدام PATCH لتعديل البيانات
+        method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json', // تأكد من أن البيانات يتم إرسالها بتنسيق JSON
+          'Content-Type': 'application/json', 
         },
-        body: JSON.stringify({ isLead: true }), // تغيير قيمة isLead إلى true
+        body: JSON.stringify({ isLead: true }), 
       });
-  
-      // تحديث الـ state بعد التعديل
+
       setTeam(team.map(member => 
         member.id === memberId ? { ...member, isLead: true } : member
       ));
@@ -57,8 +53,6 @@ const TeamList = () => {
       console.error('Error updating member role:', error);
     }
   };
-  
-  
 
   const isAdmin = user?.isAdmin;
 
@@ -72,22 +66,39 @@ const TeamList = () => {
               <TeamMemberCard member={member} />
             </Link>
 
+            {/* إذا كان العضو تيم ليدر، قم بإظهار نص "Team Leader" */}
+            {member.isLead && (
+              <motion.div 
+                className="absolute top-2 left-2 bg-white text-purple-500 px-2 py-1 rounded-full text-sm font-semibold"
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                transition={{ duration: 0.5 }} // إضافة الأنيميشن للنص
+              >
+                Leader
+              </motion.div>
+            )}
+
             {/* admin only */}
             {isAdmin && (
-              <button
+              <motion.button
                 onClick={() => deleteMember(member.id)}
                 className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
+                whileHover={{ scale: 1.1 }} // الأنيميشن عند التحويم
+                whileTap={{ scale: 0.95 }} // الأنيميشن عند الضغط
               >
                 <AiFillDelete className="text-xl text-slate-500 hover:text-slate-600" />
-              </button>
+              </motion.button>
             )}
+
             {isAdmin && (
-              <button
+              <motion.button
                 onClick={() => editRoll(member.id)}
                 className="absolute top-10 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
+                whileHover={{ scale: 1.1 }} // الأنيميشن عند التحويم
+                whileTap={{ scale: 0.95 }} // الأنيميشن عند الضغط
               >
-                <MdAdminPanelSettings className="text-xl text-slate-500 hover:text-slate-600" />                
-              </button>
+                <MdAdminPanelSettings className="text-xl text-slate-500 hover:text-slate-600" />
+              </motion.button>
             )}
           </div>
         ))}

@@ -64,34 +64,6 @@
       "isLead": true
     },
     {
-      "id": 1745669278217,
-      "name": "Diaa Iprahim",
-      "role": "backend",
-      "email": "Diaa@gmail.com",
-      "phone": "01129872080",
-      "skills": [
-        "Next.js",
-        "Python",
-        "HTML",
-        "Node.js",
-        "Django"
-      ],
-      "isAdmin": true,
-      "isLead": true
-    },
-    {
-      "id": 1745669892384,
-      "name": "nada",
-      "role": "uiux",
-      "email": "nada@gmail.com",
-      "phone": "01023685258",
-      "skills": [
-        "figma"
-      ],
-      "isAdmin": false,
-      "isLead": false
-    },
-    {
       "id": 1745670605525,
       "name": "Abdelrahman",
       "role": "فرونت اند",

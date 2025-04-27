@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
 import TeamMemberCard from './MemberCard';
 import { useEffect, useState } from 'react';
+import { AiFillDelete } from 'react-icons/ai';
+import { MdAdminPanelSettings } from "react-icons/md";
 
 const TeamList = () => {
   const [team, setTeam] = useState([]);
-  const [user, setUser] = useState(null); // سيتم إضافة المتغير الخاص بالـ user هنا
+  const [user, setUser] = useState(null); 
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    setUser(storedUser ? JSON.parse(storedUser) : null); // جلب الـ user من localStorage
+    setUser(storedUser ? JSON.parse(storedUser) : null); 
 
     const fetchTeam = async () => {
       try {
@@ -22,22 +24,42 @@ const TeamList = () => {
     fetchTeam();
   }, []);
 
-  // دالة لحذف العضو
+ 
   const deleteMember = async (memberId) => {
     try {
-      // إرسال طلب لحذف العضو من الـ API
+      
       await fetch(`http://localhost:3000/team/${memberId}`, {
         method: 'DELETE',
       });
       
-      // تحديث الـ state بعد الحذف
       setTeam(team.filter(member => member.id !== memberId));
     } catch (error) {
       console.error('Error deleting member:', error);
     }
   };
 
-  // فحص إذا كان الـ user هو أدمن
+  const editRoll = async (memberId) => {
+    try {
+      // إرسال طلب لتحديث حالة الـ isLead في الـ API
+      await fetch(`http://localhost:3000/team/${memberId}`, {
+        method: 'PATCH', // استخدام PATCH لتعديل البيانات
+        headers: {
+          'Content-Type': 'application/json', // تأكد من أن البيانات يتم إرسالها بتنسيق JSON
+        },
+        body: JSON.stringify({ isLead: true }), // تغيير قيمة isLead إلى true
+      });
+  
+      // تحديث الـ state بعد التعديل
+      setTeam(team.map(member => 
+        member.id === memberId ? { ...member, isLead: true } : member
+      ));
+    } catch (error) {
+      console.error('Error updating member role:', error);
+    }
+  };
+  
+  
+
   const isAdmin = user?.isAdmin;
 
   return (
@@ -50,13 +72,21 @@ const TeamList = () => {
               <TeamMemberCard member={member} />
             </Link>
 
-            {/* فقط إذا كان المستخدم أدمن نعرض زر الحذف */}
+            {/* admin only */}
             {isAdmin && (
               <button
                 onClick={() => deleteMember(member.id)}
-                className="absolute top-0 right-0 bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600"
+                className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
               >
-                Delete
+                <AiFillDelete className="text-xl text-slate-500 hover:text-slate-600" />
+              </button>
+            )}
+            {isAdmin && (
+              <button
+                onClick={() => editRoll(member.id)}
+                className="absolute top-10 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
+              >
+                <MdAdminPanelSettings className="text-xl text-slate-500 hover:text-slate-600" />                
               </button>
             )}
           </div>

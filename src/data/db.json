@@ -45,7 +45,7 @@
         "Next.js"
       ],
       "isAdmin": false,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745669214081,
@@ -61,7 +61,7 @@
         "Django"
       ],
       "isAdmin": false,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745669278217,
@@ -117,7 +117,9 @@
         "JavaScript",
         "HTML",
         "Next.js"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745675999943,
@@ -127,7 +129,9 @@
       "phone": "01025874125",
       "skills": [
         "figma"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745678077606,
@@ -137,7 +141,9 @@
       "phone": "01023671214",
       "skills": [
         "JavaScript"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745678206234,
@@ -150,7 +156,9 @@
         "CSS",
         "Next.js",
         "HTML"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745710086205,
@@ -162,7 +170,9 @@
         "Next.js",
         "Python",
         "Django"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745757575847,
@@ -193,7 +203,9 @@
         "Node.js",
         "JavaScript",
         "Django"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745758464133,
@@ -205,7 +217,9 @@
         "JavaScript",
         "CSS",
         "HTML"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745759193270,
@@ -218,7 +232,9 @@
         "HTML",
         "CSS",
         "JavaScript"
-      ]
+      ],
+      "isAdmin": false,
+      "isLead": false
     },
     {
       "id": 1745760674942,
@@ -230,7 +246,7 @@
         "HTML",
         "Django"
       ],
-      "isAdmin": true,
+      "isAdmin": false,
       "isLead": false
     }
   ]

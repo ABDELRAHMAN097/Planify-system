@@ -1,6 +1,55 @@
-import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { AiFillDelete } from "react-icons/ai";
+import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { AiFillDelete } from 'react-icons/ai';
+
+const ItemType = {
+  MEMBER: 'member',
+};
+
+const DraggableMember = ({ member }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemType.MEMBER,
+    item: { id: member.id },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  return (
+    <div
+      ref={drag}
+      className={`p-4 border rounded shadow cursor-move bg-white transition-opacity ${
+        isDragging ? 'opacity-50' : ''
+      }`}
+    >
+      <p className="font-bold">{member.name}</p>
+      <p className="text-sm text-gray-600">{member.role}</p>
+    </div>
+  );
+};
+
+const DropZone = ({ onDrop, children }) => {
+  const [{ isOver }, drop] = useDrop({
+    accept: ItemType.MEMBER,
+    drop: (item) => onDrop(item.id),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  return (
+    <div
+      ref={drop}
+      className={`min-h-[300px] p-4 border-2 border-dashed rounded transition-all ${
+        isOver ? 'bg-green-100 border-green-400' : 'bg-gray-50 border-gray-300'
+      }`}
+    >
+      {children}
+    </div>
+  );
+};
 
 const ProjectTeamManager = () => {
   const { id } = useParams();
@@ -9,7 +58,6 @@ const ProjectTeamManager = () => {
   const [allMembers, setAllMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
 
   const fetchProjectAndTeam = useCallback(async () => {
     try {
@@ -18,8 +66,7 @@ const ProjectTeamManager = () => {
         fetch(`http://localhost:3000/team`),
       ]);
 
-      if (!projRes.ok || !teamRes.ok)
-        throw new Error("حدث خطأ أثناء تحميل البيانات");
+      if (!projRes.ok || !teamRes.ok) throw new Error('حدث خطأ أثناء تحميل البيانات');
 
       const projectData = await projRes.json();
       const teamData = await teamRes.json();
@@ -33,7 +80,7 @@ const ProjectTeamManager = () => {
       setTeamMembers(members);
     } catch (err) {
       console.error(err);
-      setError("فشل تحميل البيانات");
+      setError('فشل تحميل البيانات');
     } finally {
       setLoading(false);
     }
@@ -43,20 +90,6 @@ const ProjectTeamManager = () => {
     fetchProjectAndTeam();
   }, [fetchProjectAndTeam]);
 
-  useEffect(() => {
-    
-    setIsMobile(window.innerWidth <= 768);
-    
-    window.addEventListener("resize", () =>
-      setIsMobile(window.innerWidth <= 768)
-    );
-    return () => {
-      window.removeEventListener("resize", () =>
-        setIsMobile(window.innerWidth <= 768)
-      );
-    };
-  }, []);
-
   const handleRemove = async (memberId) => {
     if (!project) return;
 
@@ -65,12 +98,12 @@ const ProjectTeamManager = () => {
 
     try {
       const res = await fetch(`http://localhost:3000/projects/${project.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedProject),
       });
 
-      if (!res.ok) throw new Error("فشل الحذف");
+      if (!res.ok) throw new Error('فشل الحذف');
 
       setProject(updatedProject);
       setTeamMembers((prev) => prev.filter((m) => m.id !== memberId));
@@ -87,12 +120,12 @@ const ProjectTeamManager = () => {
 
     try {
       const res = await fetch(`http://localhost:3000/projects/${project.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedProject),
       });
 
-      if (!res.ok) throw new Error("Add failed");
+      if (!res.ok) throw new Error('فشل الإضافة');
 
       setProject(updatedProject);
       const addedMember = allMembers.find((m) => m.id === memberId);
@@ -104,90 +137,65 @@ const ProjectTeamManager = () => {
     }
   };
 
-  if (loading)
-    return <p className="text-center mt-10">Loading data...</p>;
+  if (loading) return <p className="text-center mt-10">جاري تحميل البيانات...</p>;
   if (error) return <p className="text-center text-red-600 mt-10">{error}</p>;
 
   return (
-    <div className="max-w-6xl mx-auto py-8 px-6 bg-white">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-900">
-        Project Team Management
-      </h1>
+    <DndProvider backend={HTML5Backend}>
+      <div className="max-w-6xl mx-auto py-8 px-6">
+        <h1 className="text-3xl font-bold text-center mb-8">Project team management</h1>
 
-      {project && (
-        <>
-          <h2 className="text-xl font-semibold mb-6 text-center text-gray-800">
-            Project: {project.name}
-          </h2>
+        {project && (
+          <>
+            <h2 className="text-xl font-semibold mb-6 text-center">
+            Project : {project.name}
+            </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-semibold text-lg mb-4 text-center text-gray-700">
-                All Employees
-              </h3>
-              <div className="space-y-3 max-h-[300px] overflow-y-auto">
-                {allMembers
-                  .filter((m) => !project.team.includes(m.id))
-                  .map((member) => (
-                    <div
-                      key={member.id}
-                      className="p-4 border rounded shadow-md bg-gray-50"
-                    >
-                      <p className="font-bold text-gray-900">{member.name}</p>
-                      <p className="text-sm text-gray-600">{member.role}</p>
-                      {isMobile ? (
-                        <button
-                          onClick={() => handleAddToTeam(member.id)}
-                          className="bg-blue-500 text-white px-3 py-1 rounded mt-2 hover:bg-blue-600"
-                        >
-                          Add to the team
-                        </button>
-                      ) : (
-                        <div className="cursor-move text-gray-600">
-                          Withdraw Members Here
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-4 text-center text-gray-700">
-                Team Members
-              </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                {teamMembers.length === 0 ? (
-                  <p className="text-center text-gray-500">No team members</p>
-                ) : (
-                  <ul className="space-y-3">
-                    {teamMembers.map((member) => (
-                      <li
-                        key={member.id}
-                        className="flex items-center justify-between p-4 bg-white border rounded shadow-md"
-                      >
-                        <div>
-                          <p className="font-bold text-gray-900">
-                            {member.name}
-                          </p>
-                          <p className="text-sm text-gray-600">{member.role}</p>
-                        </div>
-                        <button
-                          onClick={() => handleRemove(member.id)}
-                          className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600"
-                        >
-                          <AiFillDelete className="text-xl" />
-                        </button>
-                      </li>
+                <h3 className="font-semibold text-lg mb-4 text-center">All employees</h3>
+                <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                  {allMembers
+                    .filter((m) => !project.team.includes(m.id))
+                    .map((member) => (
+                      <DraggableMember key={member.id} member={member} />
                     ))}
-                  </ul>
-                )}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg mb-4 text-center">Team members</h3>
+                <DropZone onDrop={handleAddToTeam}>
+                  {teamMembers.length === 0 ? (
+                    <p className="text-center text-gray-500">Drag the staff here</p>
+                  ) : (
+                    <ul className="space-y-3">
+                      {teamMembers.map((member) => (
+                        <li
+                          key={member.id}
+                          className="flex items-center justify-between p-4 bg-white border rounded shadow"
+                        >
+                          <div>
+                            <p className="font-bold">{member.name}</p>
+                            <p className="text-sm text-gray-600">{member.role}</p>
+                          </div>
+                          <button
+                            onClick={() => handleRemove(member.id)}
+                            className="bg-slate-500 text-white px-3 py-1 rounded hover:bg-slate-600"
+                          >
+                            <AiFillDelete className="text-xl" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </DropZone>
               </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </DndProvider>
   );
 };
 

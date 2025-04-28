@@ -5,11 +5,12 @@
       "description": "dfghg,hghd",
       "startDate": "2025-04-26",
       "endDate": "2025-04-30",
-      "status": "in-progress",
+      "status": "planned",
       "team": [
         1745669214081,
         1745669892384,
-        1745670605525
+        1745670605525,
+        1745675623299
       ],
       "tasks": [
         {
@@ -30,6 +31,37 @@
       ],
       "id": 1745677298267,
       "createdAt": "2025-04-26T14:21:38.267Z"
+    },
+    {
+      "name": "fgffdgdfdgf",
+      "description": "gfsf",
+      "startDate": "2025-04-29",
+      "endDate": "2025-05-09",
+      "status": "planned",
+      "team": [
+        1745757575847,
+        1745678206234,
+        1745758038458
+      ],
+      "tasks": [
+        {
+          "id": 1745803016041,
+          "title": "ddsf",
+          "status": "In Progress"
+        },
+        {
+          "id": 1745803022896,
+          "title": "dsfd",
+          "status": "Completed"
+        },
+        {
+          "id": 1745803027619,
+          "title": "we",
+          "status": "Completed"
+        }
+      ],
+      "id": 1745803031268,
+      "createdAt": "2025-04-28T01:17:11.268Z"
     }
   ],
   "tasks": [],
@@ -43,22 +75,6 @@
       "skills": [
         "React",
         "Next.js"
-      ],
-      "isAdmin": false,
-      "isLead": true
-    },
-    {
-      "id": 1745669214081,
-      "name": "Asmaa Mohamed",
-      "role": "Backend",
-      "email": "Asmaa@gmail.com",
-      "phone": "01258742020",
-      "skills": [
-        "Node.js",
-        "Next.js",
-        "React",
-        "HTML",
-        "Django"
       ],
       "isAdmin": false,
       "isLead": true
@@ -91,7 +107,7 @@
         "Next.js"
       ],
       "isAdmin": false,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745675999943,
@@ -115,7 +131,7 @@
         "JavaScript"
       ],
       "isAdmin": false,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745678206234,
@@ -130,21 +146,7 @@
         "HTML"
       ],
       "isAdmin": false,
-      "isLead": false
-    },
-    {
-      "id": 1745710086205,
-      "name": "Donia Samir",
-      "role": "باك اند",
-      "email": "Donia@gmail.com",
-      "phone": "01552121212",
-      "skills": [
-        "Next.js",
-        "Python",
-        "Django"
-      ],
-      "isAdmin": false,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745757575847,
@@ -161,7 +163,7 @@
         "JavaScript"
       ],
       "isAdmin": true,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745758038458,
@@ -194,21 +196,6 @@
       "isLead": false
     },
     {
-      "id": 1745759193270,
-      "name": "Ahmed Darry",
-      "role": "ui/ux",
-      "email": "darry@gmail.com",
-      "phone": "01525252525",
-      "skills": [
-        "Django",
-        "HTML",
-        "CSS",
-        "JavaScript"
-      ],
-      "isAdmin": false,
-      "isLead": false
-    },
-    {
       "id": 1745760674942,
       "name": "ahmed",
       "role": "ui/ux",
@@ -217,6 +204,39 @@
       "skills": [
         "HTML",
         "Django"
+      ],
+      "isAdmin": false,
+      "isLead": false
+    },
+    {
+      "id": 1745776953670,
+      "name": "dode",
+      "role": "backend",
+      "email": "dooo@gmail.com",
+      "phone": "01512147709",
+      "skills": [
+        "Django",
+        "HTML",
+        "Node.js",
+        "JavaScript",
+        "Next.js",
+        "Python"
+      ],
+      "isAdmin": false,
+      "isLead": false
+    },
+    {
+      "id": 1745787202433,
+      "name": "salma",
+      "role": "backend",
+      "email": "salma45@gmail.com",
+      "phone": "01023671214",
+      "skills": [
+        "HTML",
+        "Node.js",
+        "JavaScript",
+        "Django",
+        "Python"
       ],
       "isAdmin": false,
       "isLead": false

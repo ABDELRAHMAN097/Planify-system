@@ -1,106 +1,186 @@
-import { Link } from 'react-router-dom';
 import TeamMemberCard from './MemberCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { MdAdminPanelSettings } from "react-icons/md";
-import { motion } from 'framer-motion'; // استيراد مكتبة framer-motion
+import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast'; 
 
 const TeamList = () => {
   const [team, setTeam] = useState([]);
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    setUser(storedUser ? JSON.parse(storedUser) : null); 
-
-    const fetchTeam = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/team');
-        const data = await response.json();
-        setTeam(data);
-      } catch (error) {
-        console.error('Error fetching team:', error);
-      }
-    };
-    fetchTeam();
-  }, []);
-
-  const deleteMember = async (memberId) => {
+  const deleteMember = useCallback(async (memberId) => {
     try {
-      await fetch(`http://localhost:3000/team/${memberId}`, {
+      const confirmDelete = window.confirm('هل أنت متأكد أنك تريد حذف العضو؟');
+      if (!confirmDelete) return;
+  
+      setIsLoading(true);
+      const response = await fetch(`http://localhost:3000/team/${memberId}`, {
         method: 'DELETE',
       });
-      setTeam(team.filter(member => member.id !== memberId));
-    } catch (error) {
-      console.error('Error deleting member:', error);
+  
+      if (!response.ok) {
+        throw new Error('فشل في حذف العضو');
+      }
+  
+      // استخدم prevState لضمان التعامل مع البيانات الأحدث
+      setTeam(prevTeam => prevTeam.filter(member => member.id !== memberId));
+      toast.success('تم حذف العضو بنجاح ✅');
+    } catch (err) {
+      console.error('Error deleting member:', err);
+      setError(err.message);
+      toast.error('حدث خطأ أثناء الحذف ❌');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);  // تأكد من أنك قمت بإضافة جميع القيم المتغيرة كـ dependencies
+  
+  useEffect(() => {
+    const loadData = async () => {
+      if (team.length > 0) return; // إذا كانت البيانات قد تم تحميلها مسبقًا، لا تعاود تحميلها مرة أخرى.
+      
+      try {
+        const storedUser = localStorage.getItem('user');
+        setUser(storedUser ? JSON.parse(storedUser) : null);
+  
+        const response = await fetch('http://localhost:3000/team');
+        if (!response.ok) {
+          throw new Error('Failed to fetch team data');
+        }
+        const data = await response.json();
+        setTeam(data);
+      } catch (err) {
+        console.error('Error loading data:', err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    loadData();
+  }, [team.length]); // تأكد من تحميل البيانات مرة واحدة فقط.
+  
 
-  const editRoll = async (memberId) => {
+  const toggleLeaderRole = useCallback(async (memberId) => {
     try {
-      await fetch(`http://localhost:3000/team/${memberId}`, {
+      const confirmRole = window.confirm('هل تريد تغيير دور العضو؟');
+      if (!confirmRole) return;
+
+      setIsLoading(true);
+
+      const currentMember = team.find(member => member.id === memberId);
+      if (!currentMember) return;
+
+      const newRoleState = !currentMember.isLead;
+
+      const response = await fetch(`http://localhost:3000/team/${memberId}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ isLead: true }), 
+        body: JSON.stringify({ isLead: newRoleState }),
       });
 
-      setTeam(team.map(member => 
-        member.id === memberId ? { ...member, isLead: true } : member
+      if (!response.ok) {
+        throw new Error('فشل في تعديل الدور');
+      }
+
+      setTeam(prevTeam => prevTeam.map(member => 
+        member.id === memberId ? { ...member, isLead: newRoleState } : member
       ));
-    } catch (error) {
-      console.error('Error updating member role:', error);
+      toast.success('تم تعديل دور العضو بنجاح ✅');
+    } catch (err) {
+      console.error('Error updating role:', err);
+      setError(err.message);
+      toast.error('حدث خطأ أثناء تعديل الدور ❌');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [team]);
 
   const isAdmin = user?.isAdmin;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <strong>Error:</strong> {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-gradient-to-b from-gray-100 to-gray-200 py-12 px-4">
       <h1 className="text-4xl font-bold text-center mb-12 text-gray-800">Team Work</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-6xl mx-auto">
         {team.map(member => (
-          <div key={member.id} className="relative">
-            <Link to={`/team/${member.id}`}>
-              <TeamMemberCard member={member} />
-            </Link>
+          <motion.div
+            key={member.id}
+            className="relative cursor-pointer"
+            whileHover={{ scale: 1.02 }}
+          >
+            <TeamMemberCard member={member} />
 
-            {/* إذا كان العضو تيم ليدر، قم بإظهار نص "Team Leader" */}
             {member.isLead && (
               <motion.div 
                 className="absolute top-2 left-2 bg-white text-purple-500 px-2 py-1 rounded-full text-sm font-semibold"
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                transition={{ duration: 0.5 }} // إضافة الأنيميشن للنص
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
                 Leader
               </motion.div>
             )}
 
-            {/* admin only */}
             {isAdmin && (
-              <motion.button
-                onClick={() => deleteMember(member.id)}
-                className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
-                whileHover={{ scale: 1.1 }} // الأنيميشن عند التحويم
-                whileTap={{ scale: 0.95 }} // الأنيميشن عند الضغط
-              >
-                <AiFillDelete className="text-xl text-slate-500 hover:text-slate-600" />
-              </motion.button>
-            )}
+              <>
+                {/* زرار الحذف */}
+                <motion.button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteMember(member.id);
+                  }}
+                  className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Delete member"
+                  type="button"
+                >
+                  <AiFillDelete className="text-xl text-slate-500 hover:text-slate-600" />
+                </motion.button>
 
-            {isAdmin && (
-              <motion.button
-                onClick={() => editRoll(member.id)}
-                className="absolute top-10 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
-                whileHover={{ scale: 1.1 }} // الأنيميشن عند التحويم
-                whileTap={{ scale: 0.95 }} // الأنيميشن عند الضغط
-              >
-                <MdAdminPanelSettings className="text-xl text-slate-500 hover:text-slate-600" />
-              </motion.button>
+                {/* زرار تغيير الدور */}
+                <motion.button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleLeaderRole(member.id);
+                  }}
+                  className="absolute top-10 right-2 bg-white px-2 py-1 rounded-full hover:border-purple-600"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Toggle leader role"
+                  type="button"
+                >
+                  <MdAdminPanelSettings 
+                    className={`text-xl ${member.isLead ? 'text-purple-600' : 'text-slate-500 hover:text-slate-600'}`} 
+                  />
+                </motion.button>
+              </>
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

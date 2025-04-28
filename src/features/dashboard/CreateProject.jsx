@@ -126,6 +126,7 @@ const CreateProject = () => {
               name="startDate"
               value={formData.startDate}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               className="w-full outline-none px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
@@ -139,6 +140,11 @@ const CreateProject = () => {
               name="endDate"
               value={formData.endDate}
               onChange={handleChange}
+              min={
+                new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+                  .toISOString()
+                  .split("T")[0]
+              } 
               className="w-full outline-none px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 
 const MemberCard = ({ member }) => {
-  // توليد ألوان ثابتة بناء على الدور
+
   const roleColor = useMemo(() => {
     const roleColors = {
       "مطورويب": "bg-blue-500",
@@ -44,7 +44,6 @@ const MemberCard = ({ member }) => {
            randomColors[(member?.id?.toString()?.charCodeAt(0) || 0) % randomColors.length];
   }, [member?.role, member?.id]);
 
-  // بيانات العضو مع قيم افتراضية
   const safeMember = {
     id: member?.id || 0,
     name: member?.name || 'عضو غير معروف',

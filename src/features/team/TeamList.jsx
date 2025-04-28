@@ -13,7 +13,7 @@ const TeamList = () => {
 
   const deleteMember = useCallback(async (memberId) => {
     try {
-      const confirmDelete = window.confirm('هل أنت متأكد أنك تريد حذف العضو؟');
+      const confirmDelete = window.confirm("Are you sure you want to delete the member?");
       if (!confirmDelete) return;
   
       setIsLoading(true);
@@ -22,24 +22,23 @@ const TeamList = () => {
       });
   
       if (!response.ok) {
-        throw new Error('فشل في حذف العضو');
+        throw new Error('Failed to delete member');
       }
   
-      // استخدم prevState لضمان التعامل مع البيانات الأحدث
       setTeam(prevTeam => prevTeam.filter(member => member.id !== memberId));
-      toast.success('تم حذف العضو بنجاح ✅');
+      toast.success("Member deleted successfully ✅");
     } catch (err) {
       console.error('Error deleting member:', err);
       setError(err.message);
-      toast.error('حدث خطأ أثناء الحذف ❌');
+      toast.error('An error occurred while deleting ❌');
     } finally {
       setIsLoading(false);
     }
-  }, []);  // تأكد من أنك قمت بإضافة جميع القيم المتغيرة كـ dependencies
+  }, []);  
   
   useEffect(() => {
     const loadData = async () => {
-      if (team.length > 0) return; // إذا كانت البيانات قد تم تحميلها مسبقًا، لا تعاود تحميلها مرة أخرى.
+      if (team.length > 0) return; 
       
       try {
         const storedUser = localStorage.getItem('user');
@@ -60,12 +59,12 @@ const TeamList = () => {
     };
   
     loadData();
-  }, [team.length]); // تأكد من تحميل البيانات مرة واحدة فقط.
+  }, [team.length]);
   
 
   const toggleLeaderRole = useCallback(async (memberId) => {
     try {
-      const confirmRole = window.confirm('هل تريد تغيير دور العضو؟');
+      const confirmRole = window.confirm('Do you want to change the members role?');
       if (!confirmRole) return;
 
       setIsLoading(true);
@@ -84,17 +83,17 @@ const TeamList = () => {
       });
 
       if (!response.ok) {
-        throw new Error('فشل في تعديل الدور');
+        throw new Error('Failed to adjust role');
       }
 
       setTeam(prevTeam => prevTeam.map(member => 
         member.id === memberId ? { ...member, isLead: newRoleState } : member
       ));
-      toast.success('تم تعديل دور العضو بنجاح ✅');
+      toast.success('Member role successfully modified ✅');
     } catch (err) {
       console.error('Error updating role:', err);
       setError(err.message);
-      toast.error('حدث خطأ أثناء تعديل الدور ❌');
+      toast.error('An error occurred while editing the role ❌');
     } finally {
       setIsLoading(false);
     }
@@ -145,7 +144,7 @@ const TeamList = () => {
 
             {isAdmin && (
               <>
-                {/* زرار الحذف */}
+                {/* delete*/}
                 <motion.button
                   onClick={(e) => {
                     e.preventDefault();
@@ -161,7 +160,7 @@ const TeamList = () => {
                   <AiFillDelete className="text-xl text-slate-500 hover:text-slate-600" />
                 </motion.button>
 
-                {/* زرار تغيير الدور */}
+                {/* toggleLeaderRole*/}
                 <motion.button
                   onClick={(e) => {
                     e.preventDefault();

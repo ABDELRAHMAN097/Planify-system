@@ -30,7 +30,7 @@ const TasksList = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">📋 المهام</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">📋 tasks</h2>
 
       {tasks.length === 0 ? (
         <p className="text-gray-500">لا توجد مهام في هذا المشروع.</p>

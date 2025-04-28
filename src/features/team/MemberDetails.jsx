@@ -33,15 +33,14 @@ const MemberDetails = () => {
     return Math.round((completed / tasks.length) * 100);
   };
 
-  const handleTaskStatusChange = async (projectId, taskId, newStatus) => {
+  const handleProjectCompletion = async (projectId, isComplete) => {
     try {
-      // 1. تحديث حالة المهمة في الخادم
+      // 1. تحديث حالة المشروع في الخادم
       const response = await fetch(`http://localhost:3000/projects/${projectId}`);
       const project = await response.json();
       
-      const updatedTasks = project.tasks.map(task => 
-        task.id === taskId ? { ...task, status: newStatus } : task
-      );
+      const newStatus = isComplete ? "completed" : "in-progress";
+      const progress = isComplete ? 100 : calculateProjectProgress(project.tasks);
 
       await fetch(`http://localhost:3000/projects/${projectId}`, {
         method: "PUT",
@@ -50,26 +49,24 @@ const MemberDetails = () => {
         },
         body: JSON.stringify({ 
           ...project,
-          tasks: updatedTasks,
-          // تحديث حالة المشروع تلقائياً إذا اكتملت جميع المهام
-          status: calculateProjectProgress(updatedTasks) === 100 ? "completed" : project.status
+          status: newStatus
         }),
       });
 
-      // 2. تحديث الحالة المحلية
+    
       setProjects(prevProjects => 
         prevProjects.map(project => 
           project.id === projectId 
             ? { 
                 ...project, 
-                tasks: updatedTasks,
-                status: calculateProjectProgress(updatedTasks) === 100 ? "completed" : project.status
+                status: newStatus,
+                progress: progress
               } 
             : project
         )
       );
     } catch (error) {
-      console.error("Error updating task:", error);
+      console.error("Error updating project:", error);
     }
   };
 
@@ -108,14 +105,14 @@ const MemberDetails = () => {
   }
 
   if (!member) {
-    return <div className="flex justify-center items-center h-screen">العضو غير موجود</div>;
+    return <div className="flex justify-center items-center h-screen">Member not found</div>;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <Link to="/TeamList" className="inline-block mb-6 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-          العودة للفريق
+        Back to the team
         </Link>
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -134,7 +131,7 @@ const MemberDetails = () => {
 
           <div className="p-6 grid md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
-              <h2 className="text-xl font-semibold mb-4">المشاريع المشارك فيها</h2>
+              <h2 className="text-xl font-semibold mb-4">Participated projects</h2>
               {projects.length > 0 ? (
                 <ul className="space-y-4">
                   {projects.map(project => (
@@ -157,61 +154,62 @@ const MemberDetails = () => {
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-blue-500" 
-                            style={{ width: `${calculateProjectProgress(project.tasks)}%` }}
+                            style={{ width: `${project.progress}%` }}
                           ></div>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          {calculateProjectProgress(project.tasks)}% مكتمل
+                          {project.progress}% complete
                         </p>
                       </div>
 
-                      <div className="mt-3">
-                        <h4 className="font-medium mb-2">المهام:</h4>
-                        <ul className="space-y-2">
-                          {project.tasks?.map(task => (
-                            <li key={task.id} className="flex items-center justify-between">
-                              <span>{task.title}</span>
-                              <select
-                                value={task.status}
-                                onChange={(e) => handleTaskStatusChange(project.id, task.id, e.target.value)}
-                                className={`px-2 py-1 rounded text-sm ${
-                                  task.status === "Completed" ? "bg-green-100 text-green-800" :
-                                  task.status === "In Progress" ? "bg-blue-100 text-blue-800" :
-                                  "bg-gray-100 text-gray-800"
-                                }`}
-                              >
-                                <option value="Not Started">لم تبدأ</option>
-                                <option value="In Progress">قيد التنفيذ</option>
-                                <option value="Completed">مكتملة</option>
-                              </select>
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="mt-4 flex gap-2">
+                        <button
+                          onClick={() => handleProjectCompletion(project.id, true)}
+                          disabled={project.status === "completed"}
+                          className={`px-4 py-2 rounded text-sm ${
+                            project.status === "completed" 
+                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              : "bg-green-500 text-white hover:bg-green-600"
+                          }`}
+                        >
+                          complete
+                        </button>
+                        <button
+                          onClick={() => handleProjectCompletion(project.id, false)}
+                          disabled={project.status !== "completed"}
+                          className={`px-4 py-2 rounded text-sm ${
+                            project.status !== "completed" 
+                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              : "bg-yellow-500 text-white hover:bg-yellow-600"
+                          }`}
+                        >
+                          Reset to work
+                        </button>
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500">لا يوجد مشاريع مشارك فيها</p>
+                <p className="text-gray-500">There are no projects involved.</p>
               )}
             </div>
 
             <div className="space-y-4">
               <div className="bg-gray-100 p-4 rounded-lg">
-                <h3 className="font-medium mb-2">المهارات</h3>
+                <h3 className="font-medium mb-2">skills</h3>
                 <div className="flex flex-wrap gap-2">
                   {member.skills?.map((skill, index) => (
                     <span key={index} className="bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full">
                       {skill}
                     </span>
-                  )) || <span>لا توجد مهارات مسجلة</span>}
+                  )) || <span>No skills registered</span>}
                 </div>
               </div>
 
               <div className="bg-gray-100 p-4 rounded-lg">
-                <h3 className="font-medium mb-2">معلومات التواصل</h3>
-                <p className="text-sm">البريد: {member.email}</p>
-                <p className="text-sm mt-1">الهاتف: {member.phone}</p>
+                <h3 className="font-medium mb-2">info</h3>
+                <p className="text-sm">email: {member.email}</p>
+                <p className="text-sm mt-1">phone: {member.phone}</p>
               </div>
             </div>
           </div>

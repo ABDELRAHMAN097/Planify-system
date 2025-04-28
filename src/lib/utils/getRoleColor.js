@@ -27,8 +27,8 @@ const normalizeRole = (role) => {
   if (!role) return '';
   return role
     .toLowerCase()
-    .replace(/\s+/g, '')       // يشيل المسافات
-    .replace(/[^a-z0-9أ-ي]/g, ''); // يشيل أي رموز
+    .replace(/\s+/g, '')       
+    .replace(/[^a-z0-9أ-ي]/g, ''); 
 };
 
 const getRandomColor = () => {

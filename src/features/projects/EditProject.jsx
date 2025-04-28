@@ -38,12 +38,10 @@ const EditProject = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // تحقق إذا كانت كل المهام مكتملة
     const allTasksCompleted =
       project.tasks.length > 0 &&
       project.tasks.every((task) => task.status === "Completed");
   
-    // لو كل المهام مكتملة، غير حالة المشروع تلقائيًا
     const updatedProject = {
       ...project,
       status: allTasksCompleted ? "completed" : project.status,
@@ -54,11 +52,11 @@ const EditProject = () => {
   };
   
 
-  if (!project) return <p>جارٍ التحميل...</p>;
+  if (!project) return <p>loading...</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow mt-8">
-      <h2 className="text-2xl font-bold mb-4">تعديل المشروع</h2>
+      <h2 className="text-2xl font-bold mb-4">Edit Project</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="name"
@@ -80,12 +78,12 @@ const EditProject = () => {
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded"
         >
-          <option value="planned">مخطط</option>
-          <option value="in-progress">قيد التنفيذ</option>
-          <option value="completed">مكتمل</option>
+          <option value="planned">planned</option>
+          <option value="in-progress">in-progress</option>
+          <option value="completed">completed</option>
         </select>
 
-        <h3 className="text-lg font-semibold mt-6">المهام</h3>
+        <h3 className="text-lg font-semibold mt-6">tasks</h3>
         {project.tasks.map((task, index) => (
           <div
             key={index}
@@ -106,25 +104,25 @@ const EditProject = () => {
               }
               className="w-full border px-3 py-1 rounded"
             >
-              <option value="Not Started">لم تبدأ</option>
-              <option value="In Progress">قيد التنفيذ</option>
-              <option value="Completed">مكتملة</option>
+              <option value="Not Started">planned</option>
+              <option value="In Progress">in-progress</option>
+              <option value="Completed">completed</option>
             </select>
             <button
               type="button"
               onClick={() => handleDeleteTask(index)}
               className="text-red-600 hover:underline self-start"
             >
-              حذف المهمة
+              delete task
             </button>
           </div>
         ))}
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
         >
-          حفظ التعديلات
+          save
         </button>
       </form>
     </div>

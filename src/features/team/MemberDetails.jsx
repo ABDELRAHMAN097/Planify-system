@@ -9,18 +9,20 @@ const MemberDetails = () => {
   const [currentUser, setCurrentUser] = useState(null);
 
   const roleColors = {
-    "مطورويب": "bg-blue-500",
-    "webdeveloper": "bg-blue-500",
-    "باكاند": "bg-purple-500",
-    "backend": "bg-purple-500",
+    مطورويب: "bg-blue-500",
+    webdeveloper: "bg-blue-500",
+    باكاند: "bg-purple-500",
+    backend: "bg-purple-500",
     "فرونت اند": "bg-green-500",
-    "frontend": "bg-green-500",
-    "uiux": "bg-pink-500",
-    "مصممuiux": "bg-pink-500",
+    frontend: "bg-green-500",
+    uiux: "bg-pink-500",
+    مصممuiux: "bg-pink-500",
   };
 
   const normalizeRole = (role) => {
-    return role?.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '') || '';
+    return (
+      role?.toLowerCase().replace(/\s+/g, "").replace(/[^a-z0-9]/g, "") || ""
+    );
   };
 
   const getRoleColor = (role) => {
@@ -28,10 +30,12 @@ const MemberDetails = () => {
     return roleColors[normalizedRole] || "bg-gray-500";
   };
 
-  const calculateProjectProgress = (tasks) => {
+  const calculateProjectProgress = (tasks, memberId) => {
     if (!tasks || tasks.length === 0) return 0;
-    const completed = tasks.filter(task => task.status === "Completed").length;
-    return Math.round((completed / tasks.length) * 100);
+    const memberTasks = tasks.filter(task => task.assignedTo === memberId);
+    if (memberTasks.length === 0) return 0;
+    const completed = memberTasks.filter(task => task.status === "Completed").length;
+    return Math.round((completed / memberTasks.length) * 100);
   };
 
   useEffect(() => {
@@ -39,26 +43,25 @@ const MemberDetails = () => {
       try {
         const [memberRes, projectsRes] = await Promise.all([
           fetch(`http://localhost:3000/team/${id}`),
-          fetch("http://localhost:3000/projects")
+          fetch("http://localhost:3000/projects"),
         ]);
-        
+
         const memberData = await memberRes.json();
         const allProjects = await projectsRes.json();
 
-        const memberProjects = allProjects.filter(project => 
-          project.team?.includes(Number(id))
-        ).map(project => ({
-          ...project,
-          progress: calculateProjectProgress(project.tasks)
-        }));
+        const memberProjects = allProjects
+          .filter((project) => project.team?.includes(Number(id)))
+          .map((project) => ({
+            ...project,
+            tasks: project.tasks?.filter(task => task.assignedTo === Number(id)) || [],
+            progress: calculateProjectProgress(project.tasks, Number(id)),
+          }));
 
         setMember(memberData);
         setProjects(memberProjects);
 
-        // Get current user from localStorage (assuming it's saved there)
         const userFromStorage = JSON.parse(localStorage.getItem("currentUser"));
         setCurrentUser(userFromStorage);
-
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -71,20 +74,30 @@ const MemberDetails = () => {
 
   const handleTaskStatusChange = async (projectId, taskId, newStatus) => {
     try {
-      const project = projects.find(p => p.id === projectId);
-      const updatedTasks = project.tasks.map(task =>
+      // نحتاج لجلب المشروع كاملاً أولاً لتحديث المهمة
+      const projectRes = await fetch(`http://localhost:3000/projects/${projectId}`);
+      const project = await projectRes.json();
+      
+      const updatedTasks = project.tasks.map((task) =>
         task.id === taskId ? { ...task, status: newStatus } : task
       );
 
       await fetch(`http://localhost:3000/projects/${projectId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tasks: updatedTasks })
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tasks: updatedTasks }),
       });
 
-      setProjects(prev =>
-        prev.map(p =>
-          p.id === projectId ? { ...p, tasks: updatedTasks, progress: calculateProjectProgress(updatedTasks) } : p
+      // نحدث فقط المهام الخاصة بالعضو الحالي
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === projectId
+            ? {
+                ...p,
+                tasks: updatedTasks.filter(task => task.assignedTo === Number(id)),
+                progress: calculateProjectProgress(updatedTasks, Number(id)),
+              }
+            : p
         )
       );
     } catch (err) {
@@ -92,15 +105,26 @@ const MemberDetails = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  if (!member) return <div className="flex justify-center items-center h-screen">Member not found</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">Loading...</div>
+    );
+  if (!member)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Member not found
+      </div>
+    );
 
   const isOwner = currentUser && currentUser.id === member.id;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <Link to="/TeamList" className="inline-block mb-6 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+        <Link
+          to="/TeamList"
+          className="inline-block mb-6 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
           Back to the team
         </Link>
 
@@ -120,65 +144,121 @@ const MemberDetails = () => {
 
           <div className="p-6 grid md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
-              <h2 className="text-xl font-semibold mb-4">Participated Projects</h2>
+              <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
               {projects.length > 0 ? (
                 <ul className="space-y-6">
-                  {projects.map(project => (
+                  {projects.map((project) => (
                     <li key={project.id} className="border-b pb-4 last:border-b-0">
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-medium text-lg">{project.name}</h3>
-                          <p className="text-gray-600 text-sm">{project.description}</p>
+                          <p className="text-gray-600 text-sm">
+                            {project.description}
+                          </p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm ${
-                          project.status === "completed" ? "bg-green-100 text-green-800" :
-                          project.status === "in-progress" ? "bg-blue-100 text-blue-800" :
-                          "bg-yellow-100 text-yellow-800"
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${
+                            project.status === "completed"
+                              ? "bg-green-100 text-green-800"
+                              : project.status === "in-progress"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
                           {project.status || "planned"}
                         </span>
                       </div>
 
                       <div className="mt-3">
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-blue-500" 
+                          <div
+                            className="h-full bg-blue-500"
                             style={{ width: `${project.progress}%` }}
                           ></div>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          {project.progress}% complete
+                          {project.progress}% complete (your tasks)
                         </p>
                       </div>
 
                       <div className="mt-4">
-                        <h4 className="text-sm font-semibold mb-2">Tasks:</h4>
-                        <ul className="space-y-2">
-                          {project.tasks?.map(task => (
-                            <li key={task.id} className="flex justify-between items-center">
-                              <span>{task.title}</span>
-                              {isOwner ? (
-                                <select
-                                  className="border rounded px-2 py-1 text-sm"
-                                  value={task.status}
-                                  onChange={(e) => handleTaskStatusChange(project.id, task.id, e.target.value)}
-                                >
-                                  <option value="Pending">Pending</option>
-                                  <option value="In Progress">In Progress</option>
-                                  <option value="Completed">Completed</option>
-                                </select>
-                              ) : (
-                                <span className="text-xs text-gray-600">{task.status}</span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
+                        <h4 className="text-sm font-semibold mb-2">Your Tasks:</h4>
+                        {project.tasks.length > 0 ? (
+                          <ul className="space-y-2">
+                            {project.tasks.map((task) => (
+                              <li
+                                key={task.id}
+                                className="flex justify-between items-center"
+                              >
+                                <span>{task.title}</span>
+                                {isOwner ? (
+                                  <div className="flex gap-1">
+                                    <button
+                                      className={`px-2 py-1 text-xs rounded ${
+                                        task.status === "Pending"
+                                          ? "bg-yellow-500 text-white"
+                                          : "bg-gray-200 text-black"
+                                      }`}
+                                      onClick={() =>
+                                        handleTaskStatusChange(
+                                          project.id,
+                                          task.id,
+                                          "Pending"
+                                        )
+                                      }
+                                    >
+                                      Pending
+                                    </button>
+                                    <button
+                                      className={`px-2 py-1 text-xs rounded ${
+                                        task.status === "In Progress"
+                                          ? "bg-blue-600 text-white"
+                                          : "bg-gray-200 text-black"
+                                      }`}
+                                      onClick={() =>
+                                        handleTaskStatusChange(
+                                          project.id,
+                                          task.id,
+                                          "In Progress"
+                                        )
+                                      }
+                                    >
+                                      In Progress
+                                    </button>
+                                    <button
+                                      className={`px-2 py-1 text-xs rounded ${
+                                        task.status === "Completed"
+                                          ? "bg-green-600 text-white"
+                                          : "bg-gray-200 text-black"
+                                      }`}
+                                      onClick={() =>
+                                        handleTaskStatusChange(
+                                          project.id,
+                                          task.id,
+                                          "Completed"
+                                        )
+                                      }
+                                    >
+                                      Completed
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span className="text-xs text-gray-600">
+                                    {task.status}
+                                  </span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-gray-500 text-sm">No tasks assigned to you in this project.</p>
+                        )}
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500">There are no projects involved.</p>
+                <p className="text-gray-500">You are not involved in any projects.</p>
               )}
             </div>
 
@@ -188,7 +268,10 @@ const MemberDetails = () => {
                 <div className="flex flex-wrap gap-2">
                   {member.skills?.length ? (
                     member.skills.map((skill, index) => (
-                      <span key={index} className="bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full">
+                      <span
+                        key={index}
+                        className="bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full"
+                      >
                         {skill}
                       </span>
                     ))

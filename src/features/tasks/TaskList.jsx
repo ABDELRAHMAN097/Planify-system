@@ -13,6 +13,14 @@ const TasksList = () => {
   const { projectId } = useParams();
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,10 +46,10 @@ const TasksList = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">📋 المهام</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">📋 قائمة المهام في المشروع</h2>
 
       {tasks.length === 0 ? (
-        <p className="text-gray-500">لا توجد مهام في هذا المشروع.</p>
+        <p className="text-gray-500">لا توجد مهام مسجلة لهذا المشروع.</p>
       ) : (
         <ul className="divide-y divide-gray-200">
           {tasks.map((task) => (
@@ -50,7 +58,7 @@ const TasksList = () => {
                 <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
                 {task.assignedTo && (
                   <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
-                    Developer : {""}
+                    Developer :{" "}
                     {(() => {
                       const employee = employees.find((emp) => emp.id === task.assignedTo);
                       if (!employee) return "موظف غير معروف";

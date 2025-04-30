@@ -74,7 +74,7 @@ const MemberDetails = () => {
 
   const handleTaskStatusChange = async (projectId, taskId, newStatus) => {
     try {
-      // نحتاج لجلب المشروع كاملاً أولاً لتحديث المهمة
+
       const projectRes = await fetch(`http://localhost:3000/projects/${projectId}`);
       const project = await projectRes.json();
       
@@ -88,7 +88,7 @@ const MemberDetails = () => {
         body: JSON.stringify({ tasks: updatedTasks }),
       });
 
-      // نحدث فقط المهام الخاصة بالعضو الحالي
+     
       setProjects((prev) =>
         prev.map((p) =>
           p.id === projectId

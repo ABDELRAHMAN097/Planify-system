@@ -9,59 +9,187 @@
       "team": [
         1745669214081,
         1745669892384,
-        1745670605525,
-        1745675623299
+        1745675999943,
+        1745678077606,
+        1745787202433
       ],
       "tasks": [
         {
           "id": 1745677268218,
           "title": "backend",
-          "status": "Completed"
+          "status": "Completed",
+          "assignedTo": 1745787202433
         },
         {
           "id": 1745677284603,
           "title": "uiux",
-          "status": "In Progress"
+          "status": "In Progress",
+          "assignedTo": 1745675999943
         },
         {
           "id": 1745677292969,
           "title": "frontend",
-          "status": "In Progress"
+          "status": "In Progress",
+          "assignedTo": 1745678077606
         }
       ],
       "id": 1745677298267,
       "createdAt": "2025-04-26T14:21:38.267Z"
     },
     {
-      "name": "fgffdgdfdgf",
-      "description": "gfsf",
+      "name": "project2",
+      "description": "project 2",
       "startDate": "2025-04-29",
       "endDate": "2025-05-09",
       "status": "completed",
       "team": [
         1745757575847,
-        1745678206234,
-        1745758038458
+        1745758038458,
+        1745668919679
       ],
       "tasks": [
         {
           "id": 1745803016041,
-          "title": "ddsf",
-          "status": "In Progress"
+          "title": "task 1",
+          "status": "In Progress",
+          "assignedTo": 1745668919679
         },
         {
           "id": 1745803022896,
-          "title": "dsfd",
-          "status": "Completed"
+          "title": "task3",
+          "status": "Completed",
+          "assignedTo": 1745758038458
         },
         {
           "id": 1745803027619,
-          "title": "we",
-          "status": "Completed"
+          "title": "task 5",
+          "status": "Completed",
+          "assignedTo": 1745757575847
         }
       ],
       "id": 1745803031268,
       "createdAt": "2025-04-28T01:17:11.268Z"
+    },
+    {
+      "name": "pampers",
+      "description": "شركة حفاضات اطفال",
+      "startDate": "2025-04-29",
+      "endDate": "2025-05-09",
+      "status": "completed",
+      "team": [
+        1745675623299
+      ],
+      "tasks": [
+        {
+          "id": 1745833443125,
+          "title": "task 1",
+          "status": "Not Started",
+          "assignedTo": 1745670605525
+        },
+        {
+          "id": 1745833450516,
+          "title": "task 2",
+          "status": "Not Started",
+          "assignedTo": 1745675999943
+        },
+        {
+          "id": 1745833457158,
+          "title": "task 3",
+          "status": "Not Started",
+          "assignedTo": 1745678077606
+        }
+      ],
+      "id": 1745833466078,
+      "createdAt": "2025-04-28T09:44:26.078Z"
+    },
+    {
+      "name": "H&M",
+      "description": "E-commerce website \nfull-stack with (node.js&next.js)",
+      "startDate": "2025-05-01",
+      "endDate": "2025-05-30",
+      "status": "completed",
+      "team": [
+        1745675999943,
+        1745670605525,
+        1745678077606,
+        1745757575847,
+        1745787202433,
+        1745758038458
+      ],
+      "tasks": [
+        {
+          "id": 1746012498507,
+          "title": "Hom Page & Navbar",
+          "status": "Not Started",
+          "assignedTo": 1745670605525
+        },
+        {
+          "id": 1746012554095,
+          "title": "contact us & footer",
+          "status": "Not Started",
+          "assignedTo": 1745757575847
+        },
+        {
+          "id": 1746012611911,
+          "title": "About Page & Services Page",
+          "status": "Completed",
+          "assignedTo": 1745678077606
+        },
+        {
+          "id": 1746012677563,
+          "title": "ath (api`s)",
+          "status": "Not Started",
+          "assignedTo": 1745758038458
+        },
+        {
+          "id": 1746012736202,
+          "title": "backend work",
+          "status": "Not Started",
+          "assignedTo": 1745787202433
+        },
+        {
+          "id": 1746012750006,
+          "title": "ui/ux",
+          "status": "Not Started",
+          "assignedTo": 1745675999943
+        }
+      ],
+      "id": 1746012845547,
+      "createdAt": "2025-04-30T11:34:05.548Z"
+    },
+    {
+      "name": "blogs",
+      "description": "news website",
+      "startDate": "2025-05-08",
+      "endDate": "2025-05-31",
+      "status": "planned",
+      "team": [
+        1745670605525,
+        1745757575847,
+        1745787202433
+      ],
+      "tasks": [
+        {
+          "id": 1746016214282,
+          "title": "task1",
+          "status": "Not Started",
+          "assignedTo": 1745670605525
+        },
+        {
+          "id": 1746016224392,
+          "title": "task2",
+          "status": "Not Started",
+          "assignedTo": 1745757575847
+        },
+        {
+          "id": 1746016234399,
+          "title": "task3",
+          "status": "Not Started",
+          "assignedTo": 1745787202433
+        }
+      ],
+      "id": 1746016242629,
+      "createdAt": "2025-04-30T12:30:42.629Z"
     }
   ],
   "tasks": [],
@@ -77,7 +205,7 @@
         "Next.js"
       ],
       "isAdmin": false,
-      "isLead": true
+      "isLead": false
     },
     {
       "id": 1745670605525,
@@ -91,22 +219,6 @@
         "Next.js"
       ],
       "isAdmin": true,
-      "isLead": true
-    },
-    {
-      "id": 1745675623299,
-      "name": "mahmoud tohamy",
-      "role": "backend",
-      "email": "tohamy@gmail.com",
-      "phone": "01023698585",
-      "skills": [
-        "Django",
-        "Node.js",
-        "JavaScript",
-        "HTML",
-        "Next.js"
-      ],
-      "isAdmin": false,
       "isLead": true
     },
     {
@@ -131,7 +243,7 @@
         "JavaScript"
       ],
       "isAdmin": false,
-      "isLead": true
+      "isLead": false
     },
     {
       "id": 1745678206234,
@@ -146,7 +258,7 @@
         "HTML"
       ],
       "isAdmin": false,
-      "isLead": true
+      "isLead": false
     },
     {
       "id": 1745757575847,
@@ -179,7 +291,7 @@
         "Django"
       ],
       "isAdmin": false,
-      "isLead": false
+      "isLead": true
     },
     {
       "id": 1745758464133,
@@ -237,6 +349,18 @@
         "JavaScript",
         "Django",
         "Python"
+      ],
+      "isAdmin": false,
+      "isLead": false
+    },
+    {
+      "id": 1745832916104,
+      "name": "Abdelrahman",
+      "role": "ui/ux",
+      "email": "abdelrahman@gmail.com",
+      "phone": "01023671214",
+      "skills": [
+        "figma"
       ],
       "isAdmin": false,
       "isLead": false
